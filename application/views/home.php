@@ -1,0 +1,1 @@
+home view &bull; <a href="<?php echo base_url('login'); ?>">login facebook view</a>
