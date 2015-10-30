@@ -19,15 +19,20 @@ class Home extends CI_Controller {
 	 * @see http://codeigniter.com/user_guide/general/urls.html
 	 */
 
-	public function __construct(){
-
+	public function __construct()
+	{
 		parent::__construct();
-
 	}
-
 
 	public function index()
 	{	
-		$this->load->view('home');		
+		$nav = array(
+			"bread_path" => $this->metags->bread_path('/', 'Home', 'Index'),
+		);
+
+		$this->load->view('master_page/head', $this->metags->head('Home - Login com facebook e codeigniter'));
+		$this->load->view('master_page/nav', $nav);
+		$this->load->view('home');
+		$this->load->view('master_page/footer', $this->metags->scripts());		
 	}
 }
