@@ -1,14 +1,12 @@
 	<!-- scripts -->
 	<?php
 		//imprimir scripts local
-		foreach ($scripts as $key => $value) {
-			if( $value == true )
-				echo "\n <script src='".base_url("assets/js/{$key}.js")."'></script> \n";
+		foreach ($local as $key) {
+			echo "\n <script src='".base_url("assets/js/{$key}.js")."' type='text/javascript' ></script> \n";
 		}
-		//imprimir scripts outhers
-		foreach ($scripts_outhers as $key => $value) {
-			if( $value == true )
-				echo "\n <script src='".base_url("{$key}.js")."'></script> \n";
+		//imprimir scripts externo
+		foreach ($externo as $key) {
+			echo "\n <script src='".base_url("{$key}")."' type='text/javascript'></script> \n";
 		}
 	?>
 	</body>

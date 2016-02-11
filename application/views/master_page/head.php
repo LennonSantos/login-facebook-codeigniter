@@ -10,9 +10,8 @@
 	<link rel="icon" href="<?php echo base_url('favicon.png') ?>" type="image/png" sizes="32x32">
 	<?php
 
-		foreach ($styles as $key => $value) {
-			if($value == true)
-				echo "<link rel='stylesheet' href='".base_url("assets/css/{$key}.css")."'> \n";
+		foreach ($styles as $key) {
+			echo "<link rel='stylesheet' href='".base_url("assets/css/{$key}.css")."'> \n";
 		}
 
 	?>

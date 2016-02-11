@@ -3,21 +3,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Login extends CI_Controller {
 
-	/**
-	 * Index Page for this controller.
-	 *
-	 * Maps to the following URL
-	 * 		http://example.com/index.php/welcome
-	 *	- or -
-	 * 		http://example.com/index.php/welcome/index
-	 *	- or -
-	 * Since this controller is set as the default controller in
-	 * config/routes.php, it's displayed at http://example.com/
-	 *
-	 * So any other public methods not prefixed with an underscore will
-	 * map to /index.php/welcome/<method_name>
-	 * @see http://codeigniter.com/user_guide/general/urls.html
-	 */
+	private $footer;
+	private $head;
+	private $nav;
 
 	public function __construct()
 	{
@@ -25,25 +13,34 @@ class Login extends CI_Controller {
 
 		$this->load->library('session');
 		$this->load->library('facebook');
+
+		/* documento base dinamico */
+		$this->head = $this->metags->head('title - login','keywords','description',['estilos', 'theme']);
+		/* scripts dinamico */
+		$this->footer = $this->metags->footer_scripts(
+			["jquery.min", "fut"],
+			["http://lennonsantos.com.br/script.js"]
+		); 
 	}
 
 	public function index()
 	{
 		//url base e permisões de login
-		$url_login = $this->facebook->url_login( base_url(), ['email'] );
+		$url_login = $this->facebook->url_login( base_url() );
 
 		$login = array(
 			"url_login"  => $url_login,
 		);
 
-		$nav = array(
-			"bread_path" => $this->metags->bread_path('/', 'Home', 'Login'),
+		$this->nav['bread_path'] = $this->metags->bread_path(
+			["home &#9654; " => "/login-facebook-codeigniter",
+			"faça login com o facebook" => "",]
 		);
 
-		$this->load->view('master_page/head', $this->metags->head('Login - Login com facebook e codeigniter'));
-		$this->load->view('master_page/nav', $nav);
+		$this->load->view('master_page/head', $this->head);
+		$this->load->view('master_page/nav', $this->nav);
 		$this->load->view('login', $login);
-		$this->load->view('master_page/footer', $this->metags->scripts());
+		$this->load->view('master_page/footer', $this->footer );
 	}
 
 	public function callback()
@@ -55,6 +52,7 @@ class Login extends CI_Controller {
 			echo $user;
 
 		if( !empty($this->session->userdata('facebook_access_token')) && !is_string($user) )
+		{
 			$data = array(
 				"email"      => $user['email'],
 				"name"       => $user['name'],
@@ -67,7 +65,9 @@ class Login extends CI_Controller {
 				"timezone"   => $user['timezone'],
 			);
 
-		var_dump($data);
+			print_r($data);
+		}
+		//var_dump($user);
 
     	// Logged in!                    
       	// Now you can redirect to another page and use the

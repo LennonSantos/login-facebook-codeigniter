@@ -3,36 +3,34 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Home extends CI_Controller {
 
-	/**
-	 * Index Page for this controller.
-	 *
-	 * Maps to the following URL
-	 * 		http://example.com/index.php/welcome
-	 *	- or -
-	 * 		http://example.com/index.php/welcome/index
-	 *	- or -
-	 * Since this controller is set as the default controller in
-	 * config/routes.php, it's displayed at http://example.com/
-	 *
-	 * So any other public methods not prefixed with an underscore will
-	 * map to /index.php/welcome/<method_name>
-	 * @see http://codeigniter.com/user_guide/general/urls.html
-	 */
+	private $footer;
+	private $head;
+	private $nav;
 
 	public function __construct()
 	{
 		parent::__construct();
+
+		/* documento base dinamico */
+		$this->head = $this->metags->head('title','keywords','description',['estilos', 'theme']);
+		/* scripts dinamico */
+		$this->footer = $this->metags->footer_scripts(
+			["jquery.min", "fut"],
+			["http://lennonsantos.com.br/script.js"]
+		); 
 	}
 
 	public function index()
 	{	
-		$nav = array(
-			"bread_path" => $this->metags->bread_path('/', 'Home', 'Index'),
+		//$this->head['title_page'] = 'novo title';
+		$this->nav['bread_path'] = $this->metags->bread_path(
+			["home &#9654; " => "/login-facebook-codeigniter",
+			"inicio" => "",]
 		);
 
-		$this->load->view('master_page/head', $this->metags->head('Home - Login com facebook e codeigniter'));
-		$this->load->view('master_page/nav', $nav);
+		$this->load->view('master_page/head', $this->head);
+		$this->load->view('master_page/nav', $this->nav);
 		$this->load->view('home');
-		$this->load->view('master_page/footer', $this->metags->scripts());		
+		$this->load->view('master_page/footer', $this->footer );		
 	}
 }

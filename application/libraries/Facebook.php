@@ -5,16 +5,16 @@ class Facebook {
     public function set_app(){
 
         $fb = new Facebook\Facebook([
-          'app_id' => '{APP ID}',
-          'app_secret' => '{APP SECRET}',
-          'default_graph_version' => 'v2.0',
+          'app_id' => 'APP ID',
+          'app_secret' => 'APP SECRET',
+          'default_graph_version' => 'v2.5',
         ]);
 
         return $fb;
 
     }
 
-    public function url_login($base_url, $permissions){
+    public function url_login($base_url, $permissions = ['email']){
 
         $fb = $this->set_app();
 
@@ -22,7 +22,6 @@ class Facebook {
         $loginUrl = $helper->getLoginUrl("{$base_url}login/callback", $permissions);
 
         return $loginUrl;
-
     }
 
     public function callback(){
@@ -33,8 +32,17 @@ class Facebook {
         $fb = $this->set_app();
 
         $helper = $fb->getRedirectLoginHelper();
-        try {
+        try 
+        {
           $accessToken = $helper->getAccessToken();
+
+          $CI->session->set_userdata('facebook_access_token', (string) $accessToken);
+          $fb->setDefaultAccessToken($CI->session->userdata('facebook_access_token'));
+          $response = $fb->get('/me?fields=id,name,email,first_name,middle_name,last_name,gender,link,locale,timezone');
+          $userNode = $response->getGraphUser();
+          //if Logged return array data user
+          return $userNode; 
+
         } catch(Facebook\Exceptions\FacebookResponseException $e) {
           // When Graph returns an error
           return 'Graph returned an error: ' . $e->getMessage();
@@ -43,22 +51,6 @@ class Facebook {
           // When validation fails or other local issues
           return 'Facebook SDK returned an error: ' . $e->getMessage();
           exit;
-        }
-
-        if (isset($accessToken)) {
-          // Logged in!                    
-          // Now you can redirect to another page and use the
-          // access token from $_SESSION['facebook_access_token'] 
-          $CI->session->set_userdata('facebook_access_token', (string) $accessToken);
-
-          $fb->setDefaultAccessToken($CI->session->userdata('facebook_access_token'));
-
-          $response = $fb->get('/me');
-          $userNode = $response->getGraphUser();
-
-          //if Logged return array data user
-          return $userNode;   
-
         }
 
     }
